@@ -1,11 +1,16 @@
 package com.devopsbuddy.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.EnvironmentAware;
+import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by madgergely on 2017.02.26..
@@ -13,6 +18,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private Environment env;
 
     private static final String[] PUBLIC_MATCHERS = {
             "/webjars/**",
@@ -22,11 +30,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/",
             "/about/**",
             "/contact/**",
-            "/error/**/*"
+            "/error/**/*",
+            "/console/**"
     };
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        disableCsrfForDev(http);
+
         http.authorizeRequests()
                 .antMatchers(PUBLIC_MATCHERS).permitAll()
                 .anyRequest().authenticated()
@@ -35,6 +46,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .failureUrl("/login?error").permitAll()
                 .and()
                 .logout().permitAll();
+    }
+
+    private void disableCsrfForDev(HttpSecurity http) throws Exception {
+        List<String> profiles = Arrays.asList(env.getActiveProfiles());
+        if (profiles.contains("dev")) {
+            http.csrf().disable();
+            http.headers().frameOptions().disable();
+        }
     }
 
     @Autowired
