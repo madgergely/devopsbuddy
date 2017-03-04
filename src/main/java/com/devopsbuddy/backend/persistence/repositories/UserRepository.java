@@ -9,4 +9,11 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+
+    /**
+     * Returns a User given a username or null if not found.
+     * @param username The username
+     * @return a User given a username or null if not found
+     */
+    User findByUsername(String username);
 }

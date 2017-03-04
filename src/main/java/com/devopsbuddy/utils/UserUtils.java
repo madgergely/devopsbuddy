@@ -5,9 +5,9 @@ import com.devopsbuddy.backend.persistence.domain.backend.User;
 /**
  * Created by madgergely on 2017.03.04..
  */
-public class UsersUtils {
+public class UserUtils {
 
-    private UsersUtils() {
+    private UserUtils() {
         throw new AssertionError("Non instantiable");
     }
 
