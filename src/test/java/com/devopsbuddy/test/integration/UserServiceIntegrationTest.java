@@ -1,0 +1,41 @@
+package com.devopsbuddy.test.integration;
+
+import com.devopsbuddy.backend.persistence.domain.backend.Role;
+import com.devopsbuddy.backend.persistence.domain.backend.User;
+import com.devopsbuddy.backend.persistence.domain.backend.UserRole;
+import com.devopsbuddy.backend.service.UserService;
+import com.devopsbuddy.enums.PlansEnum;
+import com.devopsbuddy.enums.RolesEnum;
+import com.devopsbuddy.utils.UsersUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.junit.Assert.assertNotNull;
+
+/**
+ * Created by madgergely on 2017.03.04..
+ */
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest
+public class UserServiceIntegrationTest {
+
+    @Autowired
+    private UserService userService;
+
+    @Test
+    public void testCreateNewUser() {
+        Set<UserRole> userRoles = new HashSet<>();
+        User basicUser = UsersUtils.createBasicUser();
+        userRoles.add(new UserRole(basicUser, new Role(RolesEnum.BASIC)));
+
+        User user = userService.createUser(basicUser, PlansEnum.BASIC, userRoles);
+        assertNotNull(user);
+        assertNotNull(user.getId());
+    }
+}
