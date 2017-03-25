@@ -22,7 +22,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -31,7 +33,7 @@ import static org.junit.Assert.assertTrue;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
-public class UserIntegrationTest extends AbstractIntegrationTest {
+public class UserRepositoryIntegrationTest extends AbstractIntegrationTest {
 
     @Rule
     public TestName testName = new TestName();
@@ -81,4 +83,27 @@ public class UserIntegrationTest extends AbstractIntegrationTest {
         userRepository.delete(user.getId());
     }
 
+    @Test
+    public void testGetUserByEmail() {
+        User user = createUser(testName);
+
+        User newlyFoundUser = userRepository.findByEmail(user.getEmail());
+        assertNotNull(newlyFoundUser);
+        assertNotNull(newlyFoundUser.getId());
+
+    }
+
+    @Test
+    public void testUpdateUserPassword() {
+        User user = createUser(testName);
+        assertNotNull(user);
+        assertNotNull(user.getId());
+
+        String newPassword = UUID.randomUUID().toString();
+
+        userRepository.updateUserPassword(user.getId(), newPassword);
+
+        user = userRepository.findOne(user.getId());
+        assertEquals(newPassword, user.getPassword());
+    }
 }

@@ -3,7 +3,6 @@ package com.devopsbuddy.backend.persistence.domain.backend;
 import com.devopsbuddy.backend.persistence.converters.LocalDateTimeAttributeConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -21,8 +20,7 @@ public class PasswordResetToken implements Serializable {
     /** The application logger */
     private static final Logger LOGGER = LoggerFactory.getLogger(PasswordResetToken.class);
 
-    @Value("${token.expiration.length.minutes}")
-    private int tokenExpirationLengthMinutes = 120;
+    private static final int DEFAULT_TOKEN_EXPIRATION_LENGTH_MINUTES = 120;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -47,8 +45,8 @@ public class PasswordResetToken implements Serializable {
             throw new IllegalArgumentException("token, user and creation date time can't be null");
         }
         if (expirationMinutes == 0) {
-            LOGGER.warn("The token expiration length in minutes is zero. Assigning the default value {}", tokenExpirationLengthMinutes);
-            expirationMinutes = tokenExpirationLengthMinutes;
+            LOGGER.warn("The token expiration length in minutes is zero. Assigning the default value {}", DEFAULT_TOKEN_EXPIRATION_LENGTH_MINUTES);
+            expirationMinutes = DEFAULT_TOKEN_EXPIRATION_LENGTH_MINUTES;
         }
         this.token = token;
         this.user = user;

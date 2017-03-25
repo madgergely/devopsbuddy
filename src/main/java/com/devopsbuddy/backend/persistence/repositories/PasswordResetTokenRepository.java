@@ -3,6 +3,7 @@ package com.devopsbuddy.backend.persistence.repositories;
 import com.devopsbuddy.backend.persistence.domain.backend.PasswordResetToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Set;
@@ -15,6 +16,6 @@ public interface PasswordResetTokenRepository extends JpaRepository<PasswordRese
 
     PasswordResetToken findByToken(String token);
 
-    @Query("select prt from PasswordResetToken prt join prt.user u where prt.user.id = ?1")
-    Set<PasswordResetToken> findAllByUserId(long userId);
+    @Query("select prt from PasswordResetToken prt join prt.user u where prt.user.id = :userId")
+    Set<PasswordResetToken> findAllByUserId(@Param("userId") long userId);
 }
