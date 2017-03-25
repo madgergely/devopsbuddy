@@ -1,9 +1,7 @@
 package com.devopsbuddy.test.integration;
 
-import com.devopsbuddy.backend.persistence.domain.backend.Plan;
-import com.devopsbuddy.backend.persistence.domain.backend.Role;
-import com.devopsbuddy.backend.persistence.domain.backend.User;
-import com.devopsbuddy.backend.persistence.domain.backend.UserRole;
+import com.devopsbuddy.backend.persistence.domain.backend.*;
+import com.devopsbuddy.backend.persistence.repositories.PasswordResetTokenRepository;
 import com.devopsbuddy.backend.persistence.repositories.PlanRepository;
 import com.devopsbuddy.backend.persistence.repositories.RoleRepository;
 import com.devopsbuddy.backend.persistence.repositories.UserRepository;
@@ -12,14 +10,21 @@ import com.devopsbuddy.enums.RolesEnum;
 import com.devopsbuddy.utils.UserUtils;
 import org.junit.rules.TestName;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Created by madgergely on 2017.03.25..
  */
 public abstract class AbstractIntegrationTest {
+
+    @Value("${token.expiration.length.minutes}")
+    protected int expirationTimeInMinutes;
 
     @Autowired
     protected PlanRepository planRepository;
@@ -29,6 +34,9 @@ public abstract class AbstractIntegrationTest {
 
     @Autowired
     protected UserRepository userRepository;
+
+    @Autowired
+    protected PasswordResetTokenRepository passwordResetTokenRepository;
 
     protected Role createRole(RolesEnum rolesEnum) {
         return new Role(rolesEnum);
@@ -59,5 +67,12 @@ public abstract class AbstractIntegrationTest {
 
     protected User createUser(TestName testName) {
         return createUser(testName.getMethodName(), testName.getMethodName() + "@devopsbuddy.com");
+    }
+
+    protected PasswordResetToken createPasswordResetToken(String token, User user, LocalDateTime localDateTime) {
+        PasswordResetToken passwordResetToken = new PasswordResetToken(token, user, localDateTime, expirationTimeInMinutes);
+        passwordResetTokenRepository.save(passwordResetToken);
+        assertNotNull(passwordResetToken.getId());
+        return passwordResetToken;
     }
 }
