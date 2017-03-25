@@ -1,6 +1,9 @@
 package com.devopsbuddy.utils;
 
 import com.devopsbuddy.backend.persistence.domain.backend.User;
+import com.devopsbuddy.web.controllers.ForgotPasswordController;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by madgergely on 2017.03.04..
@@ -30,5 +33,22 @@ public class UserUtils {
         user.setDescription("A basic user");
         user.setProfileImageUrl("https://akarhol.com/basicuser");
         return user;
+    }
+
+    public static String createPasswordResetUrl(HttpServletRequest request, long userId, String token) {
+        StringBuilder passwordResetUrl = new StringBuilder();
+        passwordResetUrl.append(request.getScheme())
+                .append("://")
+                .append(request.getServerName())
+                .append(":")
+                .append(request.getServerPort())
+                .append(request.getContextPath())
+                .append(ForgotPasswordController.CHANGE_PASSWORD_PATH)
+                .append("?id=")
+                .append(userId)
+                .append("&token=")
+                .append(token);
+
+        return passwordResetUrl.toString();
     }
 }
