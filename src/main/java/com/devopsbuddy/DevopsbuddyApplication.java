@@ -15,8 +15,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @SpringBootApplication
 public class DevopsbuddyApplication implements CommandLineRunner {
@@ -34,9 +36,9 @@ public class DevopsbuddyApplication implements CommandLineRunner {
     @Value("${webmaster.email}")
     private String webmasterEmail;
 
-	public static void main(String[] args) {
-		SpringApplication.run(DevopsbuddyApplication.class, args);
-	}
+	public static void main(String[] args) throws ParseException {
+        SpringApplication.run(DevopsbuddyApplication.class, args);
+    }
 
     @Override
     public void run(String... strings) throws Exception {
